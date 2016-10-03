@@ -6,38 +6,39 @@
 
 using namespace std;
 
-struct node1{
-    int a;
-};
-
 class MyPageManager{
     private:
-        ofstream myFile;
+        
+        fstream myFile;
         bool empty;
         long pageIdCount;
+
     public:
-        MyPageManager(string);
 
-        template<typename T>
-        void saveMyPage(T, long);
+        MyPageManager(string file){
+            myFile.open(file.c_str(), fstream::in | fstream::out | fstream::binary);
+            if(!myFile.good())
+                myFile.open(file.c_str(), fstream::in | fstream::out | fstream::trunc | fstream::binary);
+        }
 
-        void saveMyPage(int x);
+        ~MyPageManager(){
+            myFile.close();
+        }
 
         template<class T>
-        void eraseMyPage(long, T&);    
+        void save(long id ,T& reg){
+            myFile.seekp(id*sizeof(T), fstream::beg);
+            myFile.write(reinterpret_cast<const char*>(&reg), sizeof(reg));
+        }
 
-        template<typename T>
-        void add2(T x){
+        template<class T>
+        T recover(long id, T& reg){
+            myFile.seekg(id*sizeof(T), fstream::beg);
+            myFile.read(reinterpret_cast<char *>(&reg), sizeof(reg));
+            return reg;            
+        }
 
-        }   
 };
-
-
-template<typename T>
-void MyPageManager::saveMyPage(T reg, long id){
-
-}
 
 
 #endif /* MYPAGEMANAGER_H */
-#include "MyPageManager.cpp"

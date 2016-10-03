@@ -12,8 +12,8 @@ MyList::MyList(void){
 
 void MyList::add(int x){
     node *nuevo = new node;
-    node test;
     nuevo->valor = x;
+    nuevo->id = tam;
     nuevo->next = NULL;
     if(tam == 0)
         root = nuevo;
@@ -27,30 +27,39 @@ void MyList::add(int x){
 
     tam++;
     MyPageManager pageManger("file.txt");
-    long id = 1;
-    // pageManger.saveMyPage(tam);
-    pageManger.add2(test);  
-    node1 temp2;  
-    pageManger.saveMyPage(test, id);
-
+    pageManger.save(tam-1, nuevo);
 }
 
 void MyList::deleteElem(int pos){
-    int i = 0;
-    if(i < tam){
-        int i = 0;
-        node* temp = root;
-        while (i != pos){
-            temp = temp->next;
-            i++;
+    if(pos < tam){
+        if(pos == 0){
+            root = root->next;
+        }else{
+            int i = 0;
+            node* temp = root;
+            while (i +1 != pos){
+                temp = temp->next;
+                i++;
+            }
+            temp->next = temp->next->next;
         }
-        temp = temp->next;
         tam--;
-    }
+     }
 }
 
-void MyList::levantarLista(){
-
+void MyList::levantarLista(char* nameFile, int cant){    
+    MyPageManager pageManager(nameFile);    
+    if(cant != 0){
+        root = pageManager.recover(0, root);
+        node* temp = root;
+        node* temp2 = new node;
+        for(int i = 1; i < cant; i++){
+            node* nuevo = pageManager.recover(i,temp2);
+            temp->next = nuevo;
+            temp = nuevo;
+        }
+        tam = cant;
+    }
 }
 
 void MyList::imprimir(){
@@ -61,4 +70,10 @@ void MyList::imprimir(){
     }
 }
 
+int MyList::getSize(){
+    return tam;
+}
+
 #endif
+
+

@@ -4,17 +4,20 @@
 struct node{
     node* next;
     int valor;
+    int id;
 };
+
 
 class MyList{
     public:         
-        node* root;
         MyList(void);        
         void add(int);
+        int getSize();
         void deleteElem(int);
-        void levantarLista();
+        void levantarLista(char*,int);
         void imprimir();
    private:
         int tam;
+        node* root;
 };
 #endif /*MYLIS_H*/
